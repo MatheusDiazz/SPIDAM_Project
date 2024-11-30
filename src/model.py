@@ -49,3 +49,19 @@ class AudioModel:
         magnitude = np.abs(spectrum)
         peak_frequency = frequencies[np.argmax(magnitude)]
         return abs(peak_frequency)
+    def compute_rt60(self):
+        if self.audio_data is None:
+            raise RuntimeError("No audio loaded. Please load an audio file first.")
+        import numpy as np
+
+        # Placeholder logic for RT60 calculation; implement proper logic if needed
+        energy = np.cumsum(self.audio_data[::-1]**2)[::-1]
+        energy_db = 10 * np.log10(energy / np.max(energy))
+
+        threshold_5db = np.where(energy_db <= -5)[0][0]
+        threshold_35db = np.where(energy_db <= -35)[0][0]
+        time_5db = threshold_5db / self.sample_rate
+        time_35db = threshold_35db / self.sample_rate
+
+        rt60 = 2 * (time_35db - time_5db)
+        return rt60
