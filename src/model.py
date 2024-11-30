@@ -22,3 +22,15 @@ class AudioModel:
             return f"Audio loaded successfully: {file_path}, Sample Rate: {self.sample_rate}"
         except Exception as e:
             raise RuntimeError(f"Error loading audio file: {e}")
+    @staticmethod
+    def _convert_to_wav(file_path):
+        from pydub import AudioSegment
+        import os
+
+        try:
+            audio = AudioSegment.from_file(file_path)
+            wav_path = os.path.splitext(file_path)[0] + ".wav"
+            audio.export(wav_path, format="wav")
+            return wav_path
+        except Exception as e:
+            raise RuntimeError(f"Error converting to WAV: {e}")
