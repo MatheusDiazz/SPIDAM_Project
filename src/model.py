@@ -34,3 +34,7 @@ class AudioModel:
             return wav_path
         except Exception as e:
             raise RuntimeError(f"Error converting to WAV: {e}")
+    def compute_audio_duration(self):
+        if self.audio_data is None:
+            raise RuntimeError("No audio loaded. Please load an audio file first.")
+        return len(self.audio_data) / self.sample_rate
