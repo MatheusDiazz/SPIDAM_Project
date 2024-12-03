@@ -103,3 +103,25 @@ class AudioController:
             plt.show()
         except Exception as e:
             self.view.update_status(self.view.results_label, f"Error: {e}")
+
+    def show_highest_resonance(self):
+        try:
+            resonance = self.model.compute_resonant_frequency()
+            self.view.update_status(self.view.results_label, f"Highest Resonance Frequency: {resonance:.2f} Hz")
+        except Exception as e:
+            self.view.update_status(self.view.results_label, f"Error: {e}")
+
+    def show_rt60_difference(self):
+        try:
+            differences = self.model.compute_rt60_difference(target_rt60=0.5)
+            result_text = "RT60 Differences (compared to 0.5 seconds):\n"
+            for band, difference in differences.items():
+                result_text += f"{band}: {difference:.2f} seconds\n"
+            self.view.update_status(self.view.results_label, result_text)
+        except Exception as e:
+            self.view.update_status(self.view.results_label, f"Error: {e}")
+
+
+if __name__ == "__main__":
+    controller = AudioController()
+    controller.view.run()
