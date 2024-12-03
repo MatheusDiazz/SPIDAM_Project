@@ -55,16 +55,16 @@ class AudioModel:
         if self.audio_data is None:
             raise RuntimeError("No audio loaded. Please load an audio file first.")
         return len(self.audio_data) / self.sample_rate
+
     def compute_resonant_frequency(self):
         if self.audio_data is None:
             raise RuntimeError("No audio loaded. Please load an audio file first.")
-        import numpy as np
-        # Compute FFT to find peak frequency
         spectrum = np.fft.fft(self.audio_data)
         frequencies = np.fft.fftfreq(len(spectrum), d=1 / self.sample_rate)
         magnitude = np.abs(spectrum)
         peak_frequency = frequencies[np.argmax(magnitude)]
         return abs(peak_frequency)
+    
     def compute_rt60(self):
         if self.audio_data is None:
             raise RuntimeError("No audio loaded. Please load an audio file first.")
