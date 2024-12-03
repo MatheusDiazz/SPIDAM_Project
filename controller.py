@@ -4,7 +4,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
-
 class AudioController:
     def __init__(self):
         self.model = AudioModel()
@@ -36,5 +35,19 @@ class AudioController:
             plt.xlabel("Time (s)")
             plt.ylabel("Amplitude")
             plt.show()
+        except Exception as e:
+            self.view.update_status(self.view.results_label, f"Error: {e}")
+
+    def compute_rt60(self):
+        try:
+            low_band = (125, 500)
+            mid_band = (500, 2000)
+            high_band = (2000, 4000)
+
+            rt60_low = self.model.compute_rt60_band(low_band)
+            rt60_mid = self.model.compute_rt60_band(mid_band)
+            rt60_high = self.model.compute_rt60_band(high_band)
+
+            self.view.update_status(self.view.results_label, f"RT60 Low: {rt60_low:.2f}s, Mid: {rt60_mid:.2f}s, High: {rt60_high:.2f}s")
         except Exception as e:
             self.view.update_status(self.view.results_label, f"Error: {e}")
