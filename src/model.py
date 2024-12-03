@@ -36,7 +36,10 @@ class AudioModel:
         except Exception as e:
             raise RuntimeError(f"Error loading audio file: {e}")
 
-    
+    def get_waveform(self):
+        if self.audio_data is None:
+            raise RuntimeError("No audio loaded. Please load an audio file first.")
+        return self.audio_data, self.sample_rate
 
     def _convert_to_wav(file_path):
         from pydub import AudioSegment
