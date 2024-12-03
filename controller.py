@@ -51,3 +51,55 @@ class AudioController:
             self.view.update_status(self.view.results_label, f"RT60 Low: {rt60_low:.2f}s, Mid: {rt60_mid:.2f}s, High: {rt60_high:.2f}s")
         except Exception as e:
             self.view.update_status(self.view.results_label, f"Error: {e}")
+
+    def alternate_rt60_plots(self):
+        try:
+            frequency_bands = [
+                ("Low (125-500 Hz)", (125, 500)),
+                ("Mid (500-2000 Hz)", (500, 2000)),
+                ("High (2000-4000 Hz)", (2000, 4000)),
+            ]
+
+            band_label, band_range = frequency_bands[self.view.current_band_index]
+            self.view.current_band_index = (self.view.current_band_index + 1) % len(
+                frequency_bands)  # Cycle through bands
+
+            rt60_value = self.model.compute_rt60_band(band_range)
+            filtered_audio = self.model.filter_audio_band(band_range)
+
+            time = np.linspace(0, len(filtered_audio) / self.model.sample_rate, len(filtered_audio))
+            plt.figure(figsize=(10, 4))
+            plt.plot(time, filtered_audio, label=f"RT60: {rt60_value:.2f}s")
+            plt.title(f"RT60 Plot - {band_label}")
+            plt.xlabel("Time (s)")
+            plt.ylabel("Amplitude")
+            plt.legend()
+            plt.tight_layout()
+            plt.show()
+        except Exception as e:
+            self.view.update_status(self.view.results_label, f"Error: {e}")
+
+    def combine_rt60_plots(self):
+        try:
+            frequency_bands = [
+                ("Low (125-500 Hz)", (125, 500)),
+                ("Mid (500-2000 Hz)", (500, 2000)),
+                ("High (2000-4000 Hz)", (2000, 4000)),
+            ]
+
+            plt.figure(figsize=(10, 6))
+            for band_label, band_range in frequency_bands:
+                rt60_value = self.model.compute_rt60_band(band_range)
+                filtered_audio = self.model.filter_audio_band(band_range)
+
+                time = np.linspace(0, len(filtered_audio) / self.model.sample_rate, len(filtered_audio))
+                plt.plot(time, filtered_audio, label=f"{band_label} RT60: {rt60_value:.2f}s")
+
+            plt.title("Combined RT60 Plots")
+            plt.xlabel("Time (s)")
+            plt.ylabel("Amplitude")
+            plt.legend()
+            plt.tight_layout()
+            plt.show()
+        except Exception as e:
+            self.view.update_status(self.view.results_label, f"Error: {e}")
