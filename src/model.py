@@ -2,6 +2,7 @@ import os
 import numpy as np
 import librosa
 from pydub import AudioSegment
+from scipy.signal import butter, sosfilt, spectrogram
 class AudioModel:
     def __init__(self):
         self.audio_data = None
