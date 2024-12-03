@@ -105,3 +105,14 @@ class AudioModel:
             rt60_differences[band_label] = rt60_value - target_rt60
 
         return rt60_differences
+
+    def filter_audio_band(self, frequency_band):
+        """
+        Filter audio for a given frequency band using a band-pass filter.
+        """
+        if self.audio_data is None:
+            raise RuntimeError("No audio loaded. Please load an audio file first.")
+
+        sos = butter(4, frequency_band, btype='bandpass', fs=self.sample_rate, output='sos')
+        filtered_audio = sosfilt(sos, self.audio_data)
+        return filtered_audio
