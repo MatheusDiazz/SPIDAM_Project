@@ -64,45 +64,28 @@ class AudioModel:
         magnitude = np.abs(spectrum)
         peak_frequency = frequencies[np.argmax(magnitude)]
         return abs(peak_frequency)
-    
-    def compute_rt60(self):
+
+    def compute_rt60_band(self, frequency_band):
         if self.audio_data is None:
             raise RuntimeError("No audio loaded. Please load an audio file first.")
-        import numpy as np
 
-        # Placeholder logic for RT60 calculation; implement proper logic if needed
-        energy = np.cumsum(self.audio_data[::-1]**2)[::-1]
-        # Compute energy decay curve
-        energy = np.cumsum(self.audio_data[::-1] ** 2)[::-1]
-        energy_db = 10 * np.log10(energy / np.max(energy))
+        sos = butter(4, frequency_band, btype='bandpass', fs=self.sample_rate, output='sos')
+        filtered_audio = sosfilt(sos, self.audio_data)
 
-        threshold_5db = np.where(energy_db <= -5)[0][0]
-        threshold_35db = np.where(energy_db <= -35)[0][0]
-        # Debug: Print energy decay curve
-        print("Energy Decay (dB):", energy_db)
-        # Check if energy decay curve has valid data
-        if len(energy_db) == 0 or np.max(energy_db) == np.min(energy_db):
-            raise ValueError("Energy decay curve is invalid. Audio may be silent or too short.")
-        # Attempt to find absolute thresholds (-5 dB and -35 dB)
-        thresholds_5db = np.where(energy_db <= -5)[0]
-        thresholds_35db = np.where(energy_db <= -35)[0]
-        if len(thresholds_5db) > 0 and len(thresholds_35db) > 0:
-            # Use absolute thresholds if available
-            threshold_5db = thresholds_5db[0]
-            threshold_35db = thresholds_35db[0]
-        else:
-            # Fallback: Use dynamic thresholds based on the minimum decay level
-            print("Using dynamic thresholds as absolute thresholds are not found.")
-            min_db = np.min(energy_db)
-            threshold_5db = np.where(energy_db <= min_db * 0.9)[0]
-            threshold_35db = np.where(energy_db <= min_db * 0.7)[0]
-            if len(threshold_5db) == 0 or len(threshold_35db) == 0:
-                raise ValueError("Cannot determine RT60 due to insufficient decay.")
-            threshold_5db = threshold_5db[0]
-            threshold_35db = threshold_35db[0]
-        # Calculate RT60
-        time_5db = threshold_5db / self.sample_rate
-        time_35db = threshold_35db / self.sample_rate
-        rt60 = 2 * (time_35db - time_5db)
-        print(f"RT60 Calculation Successful: {rt60:.2f} seconds")
+        energy = np.cumsum(filtered_audio[::-1] ** 2)[::-1]
+        energy_db = 10 * np.log10(energy + 1e-10)
+
+        peak_energy_db = np.max(energy_db)
+        threshold_5db = peak_energy_db - 5
+        threshold_25db = peak_energy_db - 25
+
+        time_indices = np.linspace(0, len(filtered_audio) / self.sample_rate, len(filtered_audio))
+        try:
+            t_5db = time_indices[np.where(energy_db <= threshold_5db)[0][0]]
+            t_25db = time_indices[np.where(energy_db <= threshold_25db)[0][0]]
+        except IndexError:
+            raise ValueError("Thresholds not reached in the audio.")
+
+        rt60 = 2 * (t_25db - t_5db)
         return rt60
+
