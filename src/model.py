@@ -35,7 +35,9 @@ class AudioModel:
             return f"Audio loaded successfully: {file_path}, Sample Rate: {sample_rate}"
         except Exception as e:
             raise RuntimeError(f"Error loading audio file: {e}")
-        
+
+    
+
     def _convert_to_wav(file_path):
         from pydub import AudioSegment
         import os
