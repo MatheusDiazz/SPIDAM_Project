@@ -40,3 +40,16 @@ class AudioView:
         self.rt60_difference_button = tk.Button(self.root, text="RT60 Difference", command=self.controller.show_rt60_difference, state=tk.DISABLED)
         self.rt60_difference_button.pack(pady=10)
 
+    def run(self):
+        self.root.mainloop()
+
+    def enable_buttons(self):
+        self.waveform_button.config(state=tk.NORMAL)
+        self.rt60_button.config(state=tk.NORMAL)
+        self.alternate_rt60_button.config(state=tk.NORMAL)
+        self.resonance_button.config(state=tk.NORMAL)
+        self.combine_rt60_button.config(state=tk.NORMAL)
+        self.rt60_difference_button.config(state=tk.NORMAL)
+
+    def update_status(self, label, text):
+        label.config(text=text)
