@@ -24,3 +24,16 @@ class AudioController:
                 self.view.update_status(self.view.results_label, f"Error: {e}")
         else:
             self.view.update_status(self.view.results_label, "Error: No file selected.")
+
+    def display_waveform(self):
+        try:
+            audio_data, sample_rate = self.model.get_waveform()
+            time = np.linspace(0, len(audio_data) / sample_rate, len(audio_data))
+            plt.figure(figsize=(10, 4))
+            plt.plot(time, audio_data)
+            plt.title("Waveform")
+            plt.xlabel("Time (s)")
+            plt.ylabel("Amplitude")
+            plt.show()
+        except Exception as e:
+            self.view.update_status(self.view.results_label, f"Error: {e}")
