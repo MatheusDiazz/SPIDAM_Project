@@ -41,9 +41,8 @@ class AudioModel:
             raise RuntimeError("No audio loaded. Please load an audio file first.")
         return self.audio_data, self.sample_rate
 
+    @staticmethod
     def _convert_to_wav(file_path):
-        from pydub import AudioSegment
-        import os
         try:
             audio = AudioSegment.from_file(file_path)
             wav_path = os.path.splitext(file_path)[0] + ".wav"
@@ -51,6 +50,7 @@ class AudioModel:
             return wav_path
         except Exception as e:
             raise RuntimeError(f"Error converting to WAV: {e}")
+
     def compute_audio_duration(self):
         if self.audio_data is None:
             raise RuntimeError("No audio loaded. Please load an audio file first.")
