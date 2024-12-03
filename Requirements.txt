@@ -1,5 +1,7 @@
-numpy
+numpy~=2.0.2
 scipy
-librosa
-matplotlib
+librosa~=0.10.2.post1
+matplotlib~=3.9.2
 pandas
+
+pydub~=0.25.1
