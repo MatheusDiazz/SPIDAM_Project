@@ -89,3 +89,19 @@ class AudioModel:
         rt60 = 2 * (t_25db - t_5db)
         return rt60
 
+    def compute_rt60_difference(self, target_rt60=0.5):
+        if self.audio_data is None:
+            raise RuntimeError("No audio loaded. Please load an audio file first.")
+
+        frequency_bands = {
+            "Low (125-500 Hz)": (125, 500),
+            "Mid (500-2000 Hz)": (500, 2000),
+            "High (2000-4000 Hz)": (2000, 4000),
+        }
+
+        rt60_differences = {}
+        for band_label, band_range in frequency_bands.items():
+            rt60_value = self.compute_rt60_band(band_range)
+            rt60_differences[band_label] = rt60_value - target_rt60
+
+        return rt60_differences
