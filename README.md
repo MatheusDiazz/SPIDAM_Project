@@ -16,7 +16,7 @@ Installation
 Clone the repository:
 
 bash
-git clone https://github.com/your-username/SPIDAM_Project.git
+git clone https://github.com/MatheusDiazz/SPIDAM_Project.git
 cd SPIDAM_Project
 Create a virtual environment (optional but recommended):
 
