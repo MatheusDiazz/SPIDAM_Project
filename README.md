@@ -16,25 +16,21 @@ Installation
 Clone the repository:
 
 bash
-Copiar código
 git clone https://github.com/your-username/SPIDAM_Project.git
 cd SPIDAM_Project
 Create a virtual environment (optional but recommended):
 
 bash
-Copiar código
 python3 -m venv venv
 source venv/bin/activate  # On Windows, use venv\Scripts\activate
 Install required dependencies: Ensure that you have the necessary Python libraries installed:
 
 bash
-Copiar código
 pip install -r requirements.txt
 Usage Instructions
 Run the application: To start the application, simply run:
 
 bash
-Copiar código
 python main.py
 Load an audio file:
 
@@ -60,7 +56,6 @@ Example of Output
 When you load an audio file and compute RT60, you will see results like:
 
 yaml
-Copiar código
 RT60 Low: 1.23s, Mid: 0.89s, High: 0.65s
 RT60 Low (125-500 Hz): Reverberation time for the low-frequency band.
 RT60 Mid (500-2000 Hz): Reverberation time for the mid-frequency band.
